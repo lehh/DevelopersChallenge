@@ -1,0 +1,19 @@
+@model ChampionshipManager.ViewModel.HomeIndexViewModel
+
+@{
+    ViewData["Title"]= "Home";
+}
+
+@section scripts
+{
+    <script>
+        $(document).ready(function(){
+            
+        });
+    </script>
+}
+
+@foreach (var championship in Model.ChampionshipList)
+{
+    @championship.Name   
+}
