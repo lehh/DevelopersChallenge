@@ -1,1 +1,25 @@
-Teste
+@model ChampionshipManager.ViewModel.TeamCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Team";
+}
+
+@section Scripts 
+{
+    @{ Html.RenderPartial("_ValidationScriptsPartial"); }
+}
+
+@using (Html.BeginForm("Create","Team", null, FormMethod.Post, true, null))
+{
+    <div class="row form-group">
+        @Html.LabelFor(m => m.Name, new { htmlAttributes = new { @class="col-sm-2" } })
+
+        <div class="col-sm-10">
+            @Html.EditorFor(m => m.Name, new { @class = "form-control" })
+
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+}

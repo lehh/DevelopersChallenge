@@ -4,7 +4,7 @@
     ViewData["Title"]= "Home";
 }
 
-@section scripts
+@section Scripts
 {
     <script>
         $(document).ready(function(){
@@ -12,6 +12,13 @@
         });
     </script>
 }
+
+<div class="row">
+    <div class="col-sm-12">
+        <a href='@Url.Action("Create","Team")' class="btn btn-primary">New Team</a>
+        <a href='@Url.Action("Create","Championship")' class="btn btn-primary">New Championship</a>
+    </div>
+</div>
 
 @foreach (var championship in Model.ChampionshipList)
 {

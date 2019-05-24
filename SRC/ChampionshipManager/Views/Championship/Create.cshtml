@@ -1,0 +1,33 @@
+@model ChampionshipManager.ViewModel.ChampionshipCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Championship";
+}
+
+@section Scripts 
+{
+    <partial name="_ValidationScriptsPartial">   
+}
+
+@using (Html.BeginForm("Create","Championship", null, FormMethod.Post, true, null))
+{
+    <div class="row form-group">
+        @Html.LabelFor(m => m.Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+
+        <div class="col-sm-10">
+            @Html.EditorFor(m => m.Name, new { @class = "form-control" })
+
+            @Html.ValidationMessageFor(m => m.Name)
+        </div>
+    </div>
+
+    <div class="row form-group">
+        @Html.LabelFor(m => m.TeamMultiSelectList, new { htmlAttributes = new { @class = "col-sm-2" } })
+
+        <div class="col-sm-10">
+            @Html.ListBoxFor(m => m.TeamIdList, Model.TeamMultiSelectList, new { @class = "form-control" })
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+}

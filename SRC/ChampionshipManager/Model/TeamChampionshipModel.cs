@@ -15,5 +15,7 @@ namespace ChampionshipManager.Model
         public Championship Championship { get; set; }
 
         public int TreePosition { get; set; }
+
+        public int Level { get; set; }
     }
 }
