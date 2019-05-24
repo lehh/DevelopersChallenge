@@ -15,16 +15,22 @@ namespace ChampionshipManager.Utils
             return (number != 0) && ((number & (number - 1)) == 0);
         }
 
+        ///Returns, based on the leaves, the zero based number of nodes in the binary tree.
+        public static int GetNumberOfNodes(int numberOfLeaves)
+        {
+            return ((numberOfLeaves * 2) - 1) - 1; //Zero based
+        }
+
         public static HashSet<int> RandomizeBrackets(List<int> idList)
         {
             var teamCount = idList.Count;
             var availableNumbersHash = new HashSet<int>();
-            var maxNodes = ((teamCount * 2) - 1) - 1; //Zero based
+            var totalNodes = GetNumberOfNodes(teamCount);
 
             while (availableNumbersHash.Count != teamCount)
             {
-                availableNumbersHash.Add(maxNodes);
-                maxNodes--;
+                availableNumbersHash.Add(totalNodes);
+                totalNodes--;
             }
 
             var random = new Random();

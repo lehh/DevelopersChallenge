@@ -46,15 +46,14 @@ namespace ChampionshipManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                //Rules
+                #region Rules
                 var countSelectedTeams = model.TeamIdList.Count;
 
                 if (!Tools.IsPowerOfTwo(countSelectedTeams))
                 {
                     TempData["Message"] = "Error: The number of selected teams must be a power of 2.";
                 }
-
-                
+                #endregion
 
                 try
                 {
@@ -65,16 +64,28 @@ namespace ChampionshipManager.Controllers
 
                     var teamChampionshipList = new List<TeamChampionship>();
 
-                    foreach (var teamId in model.TeamIdList)
+                    var positionHash = Tools.RandomizeBrackets(model.TeamIdList);
+
+                    foreach (var position in positionHash)
                     {
                         teamChampionshipList.Add(new TeamChampionship()
                         {
-                            Team = new Team() { Id = teamId },
-                            Championship = championship, 
+                            Championship = championship,
+                            TreePosition = position,
+                            Level = (int)Math.Sqrt(countSelectedTeams)
                         });
                     }
 
+                    foreach (var teamId in model.TeamIdList)
+                    {
+                        foreach (var teamChampionship in teamChampionshipList)
+                        {
+                            teamChampionship.Team = new Team { Id = teamId };
+                        }
+                    }
+
                     _context.Championship.Add(championship);
+                    _context.TeamChampionship.AddRange(teamChampionshipList);
                     await _context.SaveChangesAsync();
 
                     TempData["Message"] = "Championship " + championship.Name + " inserted successfully!";

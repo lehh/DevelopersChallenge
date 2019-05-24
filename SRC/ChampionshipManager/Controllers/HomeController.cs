@@ -9,7 +9,6 @@ namespace ChampionshipManager.Controllers
 {
     public class HomeController : Controller
     {
-
         private readonly ChampionshipManagerContext _context;
 
         public HomeController(ChampionshipManagerContext context)
