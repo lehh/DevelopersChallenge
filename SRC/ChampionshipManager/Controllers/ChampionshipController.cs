@@ -25,18 +25,14 @@ namespace ChampionshipManager.Controllers
             var model = new ChampionshipCreateViewModel();
             var teamList = await _context.Team.ToListAsync();
 
-            var SelectListItemList = new List<SelectListItem>();
-
             foreach (var team in teamList)
             {
-                SelectListItemList.Add(new SelectListItem()
+                model.TeamSelectList.Add(new SelectListItem()
                 {
                     Text = team.Name,
                     Value = team.Id.ToString()
                 });
             }
-
-            model.TeamMultiSelectList = new MultiSelectList(SelectListItemList);
 
             return View(model);
         }
@@ -52,45 +48,53 @@ namespace ChampionshipManager.Controllers
                 if (!Tools.IsPowerOfTwo(countSelectedTeams))
                 {
                     TempData["Message"] = "Error: The number of selected teams must be a power of 2.";
+                    return View(model);
                 }
                 #endregion
 
                 try
                 {
-                    var championship = new Championship()
-                    {
-                        Name = model.Name
-                    };
+                    #region Filling TeamSelectList
+                    var teamList = await _context.Team.ToListAsync();
 
+                    foreach (var team in teamList)
+                    {
+                        model.TeamSelectList.Add(new SelectListItem()
+                        {
+                            Text = team.Name,
+                            Value = team.Id.ToString()
+                        });
+                    }
+                    #endregion
+
+                    var championship = new Championship() { Name = model.Name };
                     var teamChampionshipList = new List<TeamChampionship>();
 
                     var positionHash = Tools.RandomizeBrackets(model.TeamIdList);
+                    var counter = 0;
 
                     foreach (var position in positionHash)
                     {
                         teamChampionshipList.Add(new TeamChampionship()
                         {
                             Championship = championship,
+                            Team = await _context.Team.FindAsync(model.TeamIdList[counter]),
                             TreePosition = position,
                             Level = (int)Math.Sqrt(countSelectedTeams)
                         });
+
+                        counter++;
                     }
 
-                    foreach (var teamId in model.TeamIdList)
+                    using (_context)
                     {
-                        foreach (var teamChampionship in teamChampionshipList)
-                        {
-                            teamChampionship.Team = new Team { Id = teamId };
-                        }
+                        _context.TeamChampionship.AddRange(teamChampionshipList);
+                        await _context.SaveChangesAsync();
                     }
-
-                    _context.Championship.Add(championship);
-                    _context.TeamChampionship.AddRange(teamChampionshipList);
-                    await _context.SaveChangesAsync();
 
                     TempData["Message"] = "Championship " + championship.Name + " inserted successfully!";
 
-                    return View();
+                    return View(model);
                 }
                 catch (Exception ex)
                 {
@@ -99,6 +103,16 @@ namespace ChampionshipManager.Controllers
             }
 
             return View(model);
+        }
+
+        public ActionResult Manage(int? id)
+        {
+            if (id.HasValue)
+            {
+                return View();
+            }
+
+            return RedirectToAction("Index", "Home");
         }
     }
 }

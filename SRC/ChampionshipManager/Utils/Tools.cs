@@ -34,7 +34,7 @@ namespace ChampionshipManager.Utils
             }
 
             var random = new Random();
-            availableNumbersHash.OrderBy(number => random.Next()).ToHashSet();
+            availableNumbersHash = availableNumbersHash.OrderBy(number => random.Next()).ToHashSet();
 
             return availableNumbersHash;
         }

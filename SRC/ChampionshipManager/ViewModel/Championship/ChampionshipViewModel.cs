@@ -7,6 +7,11 @@ namespace ChampionshipManager.ViewModel
 {
     public abstract class ChampionshipViewModel
     {
+        public ChampionshipViewModel()
+        {
+            TeamSelectList = new List<SelectListItem>();
+        }
+
         [Required(ErrorMessage = "Please, fill the name field")]
         [Display(Name = "Name")]
         [StringLength(150)]
@@ -14,9 +19,9 @@ namespace ChampionshipManager.ViewModel
 
         public List<int> TeamIdList { get; set; }
 
-        [Required(ErrorMessage = "Please, select at least 2 teams")]
+        [Required(ErrorMessage = "Select at least 2 teams.")]
         [Display(Name = "Teams")]
-        public MultiSelectList TeamMultiSelectList { get; set; }
+        public List<SelectListItem> TeamSelectList { get; set; }
     }
 
     public class ChampionshipCreateViewModel : ChampionshipViewModel
