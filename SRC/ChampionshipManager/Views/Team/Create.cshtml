@@ -6,7 +6,7 @@
 
 @section Scripts 
 {
-    @{ Html.RenderPartial("_ValidationScriptsPartial"); }
+    <partial Name="_ValidationScriptsPartial">
 }
 
 @using (Html.BeginForm("Create","Team", null, FormMethod.Post, true, null))

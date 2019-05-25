@@ -104,12 +104,36 @@ namespace ChampionshipManager.Controllers
 
             return View(model);
         }
-
-        public ActionResult Manage(int? id)
+        
+        ///<parameter="id">Championship Id</parameter>
+        public async Task<ActionResult> Manage(int? id)
         {
             if (id.HasValue)
             {
-                return View();
+                //Get championship by id.
+                var championship = await _context.Championship.SingleAsync(c => c.Id == id.Value);
+
+                if (championship != null)
+                {
+                    //Load TeamChampionship along with Teams in the championship object.
+                    await _context.Entry(championship).Collection(c => c.TeamsChampionship)
+                        .Query().Include(tc => tc.Team).ToListAsync();
+
+                    var model = new ChampionshipManageViewModel() { Id = id.Value };
+
+                    foreach (var teamChamp in championship.TeamsChampionship)
+                    {
+                        model.TeamDataList.Add(new ChampionshipManageViewModel.TeamData()
+                        {
+                            Id = teamChamp.TeamId,
+                            Name = teamChamp.Team.Name,
+                            TreePosition = teamChamp.TreePosition,
+                            Level = teamChamp.Level
+                        });
+                    }
+
+                    return View(model);
+                }
             }
 
             return RedirectToAction("Index", "Home");

@@ -28,4 +28,27 @@ namespace ChampionshipManager.ViewModel
     {
 
     }
+
+    public class ChampionshipManageViewModel
+    {
+        public ChampionshipManageViewModel()
+        {
+            TeamDataList = new List<TeamData>();
+        }
+
+        public struct TeamData
+        {   
+            //Team Id
+            public int Id { get; set; }
+            public string Name { get; set; }
+            public int TreePosition { get; set; }
+            public int Level { get; set; }
+        }
+
+        //Championship Id
+        public int Id { get; set; }
+
+        public List<TeamData> TeamDataList { get; set; }
+
+    }
 }
