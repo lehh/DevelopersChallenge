@@ -104,7 +104,7 @@ namespace ChampionshipManager.Controllers
                         await _context.SaveChangesAsync();
                     }
 
-                    TempData["Message"] = "Championship " + championship.Name + " inserted successfully!";
+                    TempData["Message"] = "Championship " + championship.Name + " created successfully!";
                 }
                 catch (Exception ex)
                 {

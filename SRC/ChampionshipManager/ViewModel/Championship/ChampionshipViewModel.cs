@@ -13,7 +13,7 @@ namespace ChampionshipManager.ViewModel
         }
 
         [Required(ErrorMessage = "Please, fill the name field")]
-        [Display(Name = "Name")]
+        [Display(Name = "Championship Name")]
         [StringLength(150)]
         public string Name { get; set; }
 
