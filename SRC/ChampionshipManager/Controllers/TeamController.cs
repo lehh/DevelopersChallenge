@@ -38,8 +38,7 @@ namespace ChampionshipManager.Controllers
                     await _context.SaveChangesAsync();
 
                     TempData["Message"] = "Team " + team.Name + " inserted successfully!";
-
-                    return View();
+                    ModelState.Clear();
                 }
                 catch (Exception ex)
                 {
@@ -47,7 +46,7 @@ namespace ChampionshipManager.Controllers
                 }
             }
 
-            return View(model);
+            return View();
         }
 
         [HttpGet]
@@ -72,7 +71,7 @@ namespace ChampionshipManager.Controllers
                             await _context.SaveChangesAsync();
                         }
 
-                        TempData["Message"] = "Team deleted successfully!";
+                        TempData["Message"] = "Team "+ team.Name +" deleted successfully!";
                     }
                 }
                 catch (Exception ex)

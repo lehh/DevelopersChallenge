@@ -4,9 +4,9 @@
     ViewData["Title"] = "Create Championship";
 }
 
-@section Scripts
+@section scripts
 {
-    <partial name="_ValidationScriptsPartial">
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
 
 @using (Html.BeginForm("Create", "Championship", null, FormMethod.Post, true, null))
@@ -22,7 +22,7 @@
     <div class="form-group">
         @Html.LabelFor(m => m.TeamSelectList, new { htmlAttributes = new { @class = "col-sm-2" } })
 
-        @Html.ListBoxFor(m => m.TeamIdList, Model.TeamSelectList, new { @class = "form-control", multiple="multiple", size="16", height="100%" })
+        @Html.ListBoxFor(m => m.TeamIdList, Model.TeamSelectList, new { @class = "form-control", multiple = "multiple", size = "16", height = "100%" })
 
         @Html.ValidationMessageFor(m => m.TeamSelectList)
     </div>

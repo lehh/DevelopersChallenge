@@ -42,6 +42,19 @@ namespace ChampionshipManager.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ChampionshipCreateViewModel model)
         {
+            #region Filling TeamSelectList
+            var teamList = await _context.Team.ToListAsync();
+
+            foreach (var team in teamList)
+            {
+                model.TeamSelectList.Add(new SelectListItem()
+                {
+                    Text = team.Name,
+                    Value = team.Id.ToString()
+                });
+            }
+            #endregion
+
             if (ModelState.IsValid)
             {
                 #region Validations
@@ -55,19 +68,6 @@ namespace ChampionshipManager.Controllers
 
                 try
                 {
-                    #region Filling TeamSelectList
-                    var teamList = await _context.Team.ToListAsync();
-
-                    foreach (var team in teamList)
-                    {
-                        model.TeamSelectList.Add(new SelectListItem()
-                        {
-                            Text = team.Name,
-                            Value = team.Id.ToString()
-                        });
-                    }
-                    #endregion
-
                     var championship = new Championship() { Name = model.Name, Active = true };
                     var teamChampionshipList = new List<TeamChampionship>();
 

@@ -4,9 +4,9 @@
     ViewData["Title"] = "Create Team";
 }
 
-@section Scripts
+@section scripts
 {
-    <partial Name="_ValidationScriptsPartial">
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }
 
 @using (Html.BeginForm("Create", "Team", null, FormMethod.Post, true, new { @class = "form-inline" }))
@@ -15,7 +15,7 @@
 
     @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control mr-2 ml-2" } })
 
-    @Html.ValidationMessageFor(m => m.Name)
-
     <button type="submit" class="btn btn-success">Submit</button>
+
+    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "mr-2 ml-2" })
 }
