@@ -15,4 +15,9 @@ namespace ChampionshipManager.ViewModel
     {
 
     }
+
+    public class TeamUpdateViewModel : TeamViewModel
+    {
+        public int Id { get; set; }
+    }
 }

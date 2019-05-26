@@ -49,8 +49,7 @@ namespace ChampionshipManager.Controllers
 
                 if (!Tools.IsPowerOfTwo(countSelectedTeams))
                 {
-                    TempData["Message"] = "Error: The number of selected teams must be a power of 2.";
-                    return View(model);
+                    throw new Exception("The number of selected teams must be a power of 2.");
                 }
                 #endregion
 
@@ -95,16 +94,45 @@ namespace ChampionshipManager.Controllers
                     }
 
                     TempData["Message"] = "Championship " + championship.Name + " inserted successfully!";
-
-                    return View(model);
                 }
                 catch (Exception ex)
                 {
-                    TempData["Message"] = ex.Message;
+                    TempData["Message"] = "Error: " + ex.Message;
                 }
             }
 
             return View(model);
+        }
+
+        public async Task<ActionResult> Delete(int? id)
+        {
+            if (id.HasValue)
+            {
+                try
+                {
+                    var championship = await _context.Championship.FindAsync(id.Value);
+
+                    if (championship != null)
+                    {
+                        using (_context)
+                        {
+                            _context.Entry(championship).State = EntityState.Deleted;
+                            await _context.SaveChangesAsync();
+                        }
+
+                        TempData["Message"] = "Championship deleted successfully!";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["Message"] = "Error: " + ex.Message;
+                }
+
+                return RedirectToAction("Index", "Home");
+            }
+
+            return BadRequest();
+
         }
 
         /// <summary>
