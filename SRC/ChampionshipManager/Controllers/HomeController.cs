@@ -20,6 +20,7 @@ namespace ChampionshipManager.Controllers
         public async Task<ActionResult> Index()
         {
             var championshipsList = await _context.Championship.ToListAsync();
+            var teamList = await _context.Team.ToListAsync();
 
             var model = new HomeIndexViewModel();
 
@@ -27,7 +28,18 @@ namespace ChampionshipManager.Controllers
             {
                 model.ChampionshipList.Add(new HomeIndexViewModel.ChampionshipData()
                 {
-                    Name = championship.Name
+                    Id = championship.Id,
+                    Name = championship.Name,
+                    Active = championship.Active
+                });
+            }
+
+            foreach (var team in teamList)
+            {
+                model.TeamList.Add(new HomeIndexViewModel.TeamData()
+                {
+                    Id = team.Id,
+                    Name = team.Name
                 });
             }
 
