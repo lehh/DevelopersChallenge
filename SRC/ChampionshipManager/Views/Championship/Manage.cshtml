@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Championship Management";
+    Layout = "_LayoutManage.cshtml";
 }
 
 @section head{
@@ -19,11 +20,11 @@
 
 <center>
     <h2>
-        @Model.Name
+        @Model.Name - @(Model.Active ? "In Progress" : "Finished")
     </h2>
 </center>
 
-<div id="renderedBrackets">
+<div id="renderedBrackets" class="shadow-lg">
     <div class="text-center">
         <div class="spinner-border text-light" role="status" style="width: 10rem; height: 10rem; margin:20rem;">
             <span class="sr-only">Loading...</span>

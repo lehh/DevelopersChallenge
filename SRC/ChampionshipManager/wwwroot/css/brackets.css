@@ -1,5 +1,11 @@
-﻿#container {
-    overflow-x: auto;
+﻿#renderedBrackets {
+    overflow-x: scroll;
+    white-space: nowrap;
+    width: 100%;  
+    background: white;
+}
+
+#container {
     display: flex;
 }
 

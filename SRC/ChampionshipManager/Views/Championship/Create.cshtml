@@ -4,31 +4,27 @@
     ViewData["Title"] = "Create Championship";
 }
 
-@section Scripts 
+@section Scripts
 {
-    <partial name="_ValidationScriptsPartial">   
+    <partial name="_ValidationScriptsPartial">
 }
 
-@using (Html.BeginForm("Create","Championship", null, FormMethod.Post, true, null))
+@using (Html.BeginForm("Create", "Championship", null, FormMethod.Post, true, null))
 {
-    <div class="row form-group">
-        @Html.LabelFor(m => m.Name, new { htmlAttributes = new { @class = "col-sm-2" } })
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name)
 
-        <div class="col-sm-10">
-            @Html.EditorFor(m => m.Name, new { @class = "form-control" })
+        @Html.EditorFor(m => m.Name, new { htmlAttributes = new { @class = "form-control" } })
 
-            @Html.ValidationMessageFor(m => m.Name)
-        </div>
+        @Html.ValidationMessageFor(m => m.Name)
     </div>
 
-    <div class="row form-group">
+    <div class="form-group">
         @Html.LabelFor(m => m.TeamSelectList, new { htmlAttributes = new { @class = "col-sm-2" } })
 
-        <div class="col-sm-10">
-            @Html.ListBoxFor(m => m.TeamIdList, Model.TeamSelectList, new { @class = "form-control" })
+        @Html.ListBoxFor(m => m.TeamIdList, Model.TeamSelectList, new { @class = "form-control", multiple="multiple", size="16", height="100%" })
 
-            @Html.ValidationMessageFor(m => m.TeamSelectList)
-        </div>
+        @Html.ValidationMessageFor(m => m.TeamSelectList)
     </div>
 
     <button type="submit" class="btn btn-success">Submit</button>

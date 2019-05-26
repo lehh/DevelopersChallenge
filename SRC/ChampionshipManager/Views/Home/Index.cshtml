@@ -10,98 +10,96 @@
         $(document).ready(function () {
             $('#modalDelete').on('shown.bs.modal', function (event) {
                 var championshipId = event.relatedTarget.dataset.id;
-                var btnDelete = $(this).find("#btnDelete");
-                var btnDeleteHref = btnDelete.attr("href");
+                var href = "@Url.Action("Delete","Championship")/" + championshipId;
 
-                btnDelete.attr("href", btnDeleteHref + "/" + championshipId);
+                $(this).find("#btnDelete").attr("href", href);
             });
         });
     </script>
 }
 
-<div class="container shadow-lg" style="background:white; padding:1%;">
-    <div class="mt-4">
-        <h4 class="float-left">
-            Championships
-        </h4>
-        <div class="float-right mb-3">
-            <a href='@Url.Action("Create","Championship")' class="btn btn-info">New Championship</a>
-        </div>
-    </div>
 
-    <div class="table-responsive">
-        <table class="table table-bordered table-active">
-            <thead class="thead-dark">
+<div class="mt-4">
+    <h4 class="float-left">
+        Championships
+    </h4>
+    <div class="float-right mb-3">
+        <a href='@Url.Action("Create","Championship")' class="btn btn-info">New Championship</a>
+    </div>
+</div>
+
+<div class="table-responsive">
+    <table class="table table-bordered table-active">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Status
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var championship in Model.ChampionshipList)
+            {
                 <tr>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Status
-                    </th>
-                    <th>
-                        Actions
-                    </th>
+                    <td>
+                        @championship.Name
+                    </td>
+                    <td>
+                        @(championship.Active ? "In Progress" : "Finished")
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Manage","Championship", new { id = championship.Id })" class="btn btn-sm btn-success">Manage</a>
+                        <button type="button" data-toggle="modal" data-target="#modalDelete" data-id="@championship.Id" id="btnModalDelete" class="btn btn-sm btn-danger">Delete</button>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var championship in Model.ChampionshipList)
-                {
-                    <tr>
-                        <td>
-                            @championship.Name
-                        </td>
-                        <td>
-                            @(championship.Active ? "In Progress" : "Finished")
-                        </td>
-                        <td>
-                            <a href="@Url.Action("Manage","Championship", new { id = championship.Id })" class="btn btn-sm btn-success">Manage</a>
-                            <button type="button" data-toggle="modal" data-target="#modalDelete" data-id="@championship.Id" id="btnModalDelete" class="btn btn-sm btn-danger">Delete</button>
-                        </td>
-                    </tr>
 
-                }
-            </tbody>
-        </table>
+            }
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-4">
+    <h4 class="float-left">
+        Teams
+    </h4>
+    <div class="float-right mb-3">
+        <a href='@Url.Action("Create","Team")' class="btn btn-info">New Team</a>
     </div>
+</div>
 
-    <div class="mt-4">
-        <h4 class="float-left">
-            Teams
-        </h4>
-        <div class="float-right mb-3">
-            <a href='@Url.Action("Create","Team")' class="btn btn-info">New Team</a>
-        </div>
-    </div>
-
-    <div class="table-responsive">
-        <table class="table table-bordered table-active">
-            <thead class="thead-dark">
+<div class="table-responsive">
+    <table class="table table-bordered table-active">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var team in Model.TeamList)
+            {
                 <tr>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Actions
-                    </th>
+                    <td>
+                        @team.Name
+                    </td>
+                    <td>
+                        <a href="@Url.Action("Delete","Team", new { id = team.Id })" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var team in Model.TeamList)
-                {
-                    <tr>
-                        <td>
-                            @team.Name
-                        </td>
-                        <td>
-                            <a href="@Url.Action("Delete","Team", new { id = team.Id })" class="btn btn-sm btn-danger">Delete</a>
-                        </td>
-                    </tr>
 
-                }
-            </tbody>
-        </table>
-    </div>
+            }
+        </tbody>
+    </table>
 </div>
 
 
@@ -119,7 +117,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <a href="@Url.Action("Delete","Championship")" id="btnDelete" class="btn btn-danger">Delete</a>
+                <a href="#" id="btnDelete" class="btn btn-danger">Delete</a>
             </div>
         </div>
     </div>
