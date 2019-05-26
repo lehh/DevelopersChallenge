@@ -1,176 +1,32 @@
 @model ChampionshipManager.ViewModel.ChampionshipManageViewModel
 
 @{
-ViewData["Title"] = "Championship Management";
-var numberOfTeams = Model.TeamDataList.Count;
-var numberOfLevels = Math.Sqrt(numberOfTeams);
-var helper = numberOfTeams/2;
+    ViewData["Title"] = "Championship Management";
 }
 
 @section head{
-<style>
-    .rectangle {
-        background: blue;
-        margin-bottom: 5px;
-        border-style: solid;
-        border-width: 1px;
-        border-color: black;
-        border-radius: 4px; 
-    }
-
-    .brackets-1 {
-        padding: 62% 0;
-    }
-
-    .brackets-2 {
-        padding: 124% 0;
-    }
-
-    .brackets-3 {
-        padding: 124% 0;
-    }
-
-    .brackets-semi-final {
-        padding: 156% 0;
-    }
-
-    .brackets-final {
-        padding: 166% 0;
-    }
-
-    .bracket {
-        padding-top: 25%;
-    }
-
-    .column {
-        position: relative;
-        width: 15%;
-        margin-right: 120px;
-    }
-
-    #container {
-        overflow-x: auto;
-        display: flex;
-    }
-</style>
+<link rel="stylesheet" href="~/css/brackets.css" />
 }
 
-<!-- @foreach (var team in Model.TeamDataList){
-    @team.Name
-    <text><br></text>
-} -->
+@section scripts{
+<script src="~/js/manage.js" asp-append-version="true"></script>
+<script>
+        $(document).ready(function () {
+            LoadTeams(@Model.Id);
+        });
+</script>
+}
 
-<div id="container">
-    @while (numberOfTeams >= 0){
+<center>
+    <h2>
+        @Model.Name
+    </h2>
+</center>
 
-        <div class="column">
-
-        while (helper != numberOfTeams)
-        {
-            <div class="brackets-@(numberOfLevels)">
-                <div class="bracket">
-                    <div class="rectangle" id="@numberOfTeams - 1">teste</div>
-                    <div class="rectangle" id="@numberOfTeams - 2">teste</div>
-                </div>
-            </div>
-
-            numberOfTeams -= 2;
-            numberOfLevels--;
-        }
-
+<div id="renderedBrackets">
+    <div class="text-center">
+        <div class="spinner-border text-light" role="status" style="width: 10rem; height: 10rem; margin:20rem;">
+            <span class="sr-only">Loading...</span>
         </div>
-
-        helper = helper/2;
-    }
+    </div>
 </div>
-
-<!-- <div id="container">
-    <div class="column">
-        <div class="brackets-0">
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="column">
-        <div class="brackets-1">
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="column">
-        <div class="brackets-2">
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="column">
-        <div class="brackets-3">
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-                <div class="rectangle">teste</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="column">
-        <div class="brackets-3">
-            <div class="bracket">
-                <div class="rectangle">teste</div>
-            </div>
-        </div>
-    </div>
-</div> -->

@@ -20,6 +20,8 @@ namespace ChampionshipManager.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<bool>("Active");
+
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
@@ -45,9 +47,7 @@ namespace ChampionshipManager.Migrations
 
                     b.Property<int>("TeamId");
 
-                    b.Property<int>("Id");
-
-                    b.Property<int>("Level");
+                    b.Property<bool>("TeamActive");
 
                     b.Property<int>("TreePosition");
 

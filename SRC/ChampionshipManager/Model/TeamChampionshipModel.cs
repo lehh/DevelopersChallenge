@@ -6,8 +6,6 @@ namespace ChampionshipManager.Model
     [Table("Team_Championship")]
     public class TeamChampionship
     {
-        public int Id { get; set; }
-
         public int TeamId { get; set; }
         public Team Team { get; set; }
 
@@ -16,6 +14,6 @@ namespace ChampionshipManager.Model
 
         public int TreePosition { get; set; }
 
-        public int Level { get; set; }
+        public bool TeamActive { get; set; }
     }
 }

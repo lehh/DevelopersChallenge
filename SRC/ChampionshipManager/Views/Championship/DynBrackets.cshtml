@@ -1,0 +1,46 @@
+@model ChampionshipManager.ViewModel.ChampionshipBracketsViewModel
+
+<div id="container">
+    @{
+        var totalNodes = Model.TotalNodes;
+        var currentColumnBrackets = Model.NumberOfTeams / 2;
+        var nextColumnBrackets = currentColumnBrackets / 2;
+    }
+
+    @while (currentColumnBrackets >= 1)
+    {
+        <div class="column">
+            <div class="brackets">
+
+                @while (currentColumnBrackets > 0)
+                {
+                    <div class="bracket">
+                        @*1st Team*@
+                        <button type="button" class="btn btn-sm btn-info btn-frwd" id="btnFrwd@(totalNodes)">></button>
+                        <div class="rectangle" id="@(totalNodes)"></div>
+
+                        @*2nd Team*@
+                        <button type="button" class="btn btn-sm btn-info btn-frwd" id="btnFrwd@(totalNodes-1)">></button>
+                        <div class="rectangle" id="@(totalNodes - 1)"></div>
+                    </div>
+
+                    totalNodes -= 2;
+                    currentColumnBrackets -= 1;
+                }
+            </div>
+        </div>
+
+        currentColumnBrackets = nextColumnBrackets;
+        nextColumnBrackets = nextColumnBrackets / 2;
+    }
+
+
+    <div class="column">
+        <div class="brackets">
+            <div class="bracket">
+                <center><strong>WINNER!</strong> </center>
+                <div class="rectangle" id="0"></div>
+            </div>
+        </div>
+    </div>
+</div>

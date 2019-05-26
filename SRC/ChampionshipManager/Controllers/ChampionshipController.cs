@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Net;
+using System.Linq;
 
 namespace ChampionshipManager.Controllers
 {
@@ -42,7 +44,7 @@ namespace ChampionshipManager.Controllers
         {
             if (ModelState.IsValid)
             {
-                #region Rules
+                #region Validations
                 var countSelectedTeams = model.TeamIdList.Count;
 
                 if (!Tools.IsPowerOfTwo(countSelectedTeams))
@@ -67,7 +69,7 @@ namespace ChampionshipManager.Controllers
                     }
                     #endregion
 
-                    var championship = new Championship() { Name = model.Name };
+                    var championship = new Championship() { Name = model.Name, Active = true };
                     var teamChampionshipList = new List<TeamChampionship>();
 
                     var positionHash = Tools.RandomizeBrackets(model.TeamIdList);
@@ -80,7 +82,7 @@ namespace ChampionshipManager.Controllers
                             Championship = championship,
                             Team = await _context.Team.FindAsync(model.TeamIdList[counter]),
                             TreePosition = position,
-                            Level = (int)Math.Sqrt(countSelectedTeams)
+                            TeamActive = true
                         });
 
                         counter++;
@@ -104,39 +106,170 @@ namespace ChampionshipManager.Controllers
 
             return View(model);
         }
-        
-        ///<parameter="id">Championship Id</parameter>
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id">Championship Id</param>
+        /// <returns></returns>
         public async Task<ActionResult> Manage(int? id)
         {
             if (id.HasValue)
             {
-                //Get championship by id.
-                var championship = await _context.Championship.SingleAsync(c => c.Id == id.Value);
-
-                if (championship != null)
+                try
                 {
-                    //Load TeamChampionship along with Teams in the championship object.
-                    await _context.Entry(championship).Collection(c => c.TeamsChampionship)
-                        .Query().Include(tc => tc.Team).ToListAsync();
+                    //Get championship by id.
+                    var championship = await _context.Championship.SingleAsync(c => c.Id == id.Value);
 
-                    var model = new ChampionshipManageViewModel() { Id = id.Value };
-
-                    foreach (var teamChamp in championship.TeamsChampionship)
+                    if (championship != null)
                     {
-                        model.TeamDataList.Add(new ChampionshipManageViewModel.TeamData()
-                        {
-                            Id = teamChamp.TeamId,
-                            Name = teamChamp.Team.Name,
-                            TreePosition = teamChamp.TreePosition,
-                            Level = teamChamp.Level
-                        });
-                    }
+                        //Load TeamsChampionship in the championship object.
+                        _context.Entry(championship).Collection(c => c.TeamsChampionship).Load();
 
-                    return View(model);
+                        var model = new ChampionshipManageViewModel()
+                        {
+                            Id = id.Value,
+                            Name = championship.Name,
+                            Active = championship.Active
+                        };
+
+                        return View(model);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TempData["Message"] = "Error: " + ex.Message;
                 }
             }
 
             return RedirectToAction("Index", "Home");
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="id"> Championship Id </param>
+        /// <returns></returns>
+        public async Task<ActionResult> GetChampionshipTeams(int? id)
+        {
+            if (id.HasValue)
+            {
+                try
+                {
+                    //Get championship by id.
+                    var championship = await _context.Championship.SingleAsync(c => c.Id == id.Value);
+
+                    if (championship != null)
+                    {
+                        var teamChampList = new List<object>();
+
+                        //Load TeamChampionship along with Teams in the championship object.
+                        await _context.Entry(championship).Collection(c => c.TeamsChampionship)
+                            .Query().Include(tc => tc.Team).ToListAsync();
+
+                        foreach (var teamChamp in championship.TeamsChampionship)
+                        {
+                            teamChampList.Add(new
+                            {
+                                id = teamChamp.TeamId,
+                                name = teamChamp.Team.Name,
+                                treePosition = teamChamp.TreePosition,
+                                active = teamChamp.TeamActive
+                            });
+                        }
+
+                        return Json(teamChampList);
+                    }
+
+                    return NotFound();
+
+                }
+                catch (Exception ex)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    return Json(ex.Message);
+                }
+            }
+            return BadRequest();
+        }
+
+        /// <summary>
+        /// Advance a team to the next championship phase.
+        /// </summary>
+        /// <param name="id">Championship Id</param>
+        /// <param name="teamId">Team Id</param>
+        /// <returns></returns>
+        [HttpPost]
+        public async Task<ActionResult> AdvanceToNextPhase(int? id, int? teamId)
+        {
+            if (teamId.HasValue && id.HasValue)
+            {
+                try
+                {
+                    //Get championship by id.
+                    var championship = await _context.Championship.SingleAsync(c => c.Id == id);
+
+                    //Load TeamChampionship in the championship object.
+                     _context.Entry(championship).Collection(c => c.TeamsChampionship).Load();
+
+                    //Get the team that's going to the next phase.
+                    var teamChamp = championship.TeamsChampionship.Where(tc => tc.TeamId == teamId).SingleOrDefault();
+
+                    var teamPosition = teamChamp.TreePosition;
+
+                    //Find the parent node index.
+                    //The parent node of N is (N-1)/2.
+                    var newPosition = (teamPosition - 1) / 2;
+
+                    if (newPosition <= 0)
+                    {
+                        newPosition = 0;
+
+                        //If team won the finals, the championship ends.
+                        championship.Active = false;
+                    }
+
+                    teamChamp.TreePosition = newPosition;
+
+                    int siblingPosition;
+
+                    //Find the node index of the defeated team.
+                    if ((teamPosition - 1) % 2 == 0)
+                        siblingPosition = teamPosition + 1;
+                    else
+                        siblingPosition = teamPosition - 1;
+
+                    //Get the defeated team.
+                    var siblingTeamChamp = championship.TeamsChampionship.Where(tc => tc.TreePosition == siblingPosition).SingleOrDefault();
+                    //Disqualify them from the championship
+                    siblingTeamChamp.TeamActive = false;
+
+                    //Save changes to database.
+                    using (_context)
+                    {
+                        _context.Entry(teamChamp).State = EntityState.Modified;
+                        _context.Entry(siblingTeamChamp).State = EntityState.Modified;
+                        _context.Entry(championship).State = EntityState.Modified;
+
+                        await _context.SaveChangesAsync();
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    return Json(ex.Message);
+                }
+
+                return Ok();
+            }
+
+            return BadRequest();
+        }
+
+        public ViewResult GenerateBrackets(int numberOfTeams, int totalNodes)
+        {
+            return View("DynBrackets", new ChampionshipBracketsViewModel() { NumberOfTeams = numberOfTeams, TotalNodes = totalNodes });
         }
     }
 }

@@ -10,6 +10,8 @@ namespace ChampionshipManager.Model
 
         public string Name { get; set; }
 
+        public bool Active { get; set; }
+
         public ISet<TeamChampionship> TeamsChampionship { get; set; }
     }
 }

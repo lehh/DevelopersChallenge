@@ -18,7 +18,7 @@ namespace ChampionshipManager.Utils
         ///Returns, based on the leaves, the zero based number of nodes in the binary tree.
         public static int GetNumberOfNodes(int numberOfLeaves)
         {
-            return ((numberOfLeaves * 2) - 1) - 1; //Zero based
+            return (numberOfLeaves * 2) - 2; //Zero based
         }
 
         public static HashSet<int> RandomizeBrackets(List<int> idList)
