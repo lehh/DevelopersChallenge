@@ -9,6 +9,7 @@ namespace ChampionshipManager.Controllers
 {
     public class HomeController : Controller
     {
+        //Database Context
         private readonly ChampionshipManagerContext _context;
 
         public HomeController(ChampionshipManagerContext context)
@@ -16,6 +17,10 @@ namespace ChampionshipManager.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Lists all Championship and Teams.
+        /// </summary>
+        /// <returns>Index View</returns>
         [HttpGet]
         public async Task<ActionResult> Index()
         {

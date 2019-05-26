@@ -5,16 +5,19 @@
     Layout = "_LayoutManage.cshtml";
 }
 
-@section head{
+@section head
+{
 <link rel="stylesheet" href="~/css/brackets.css" />
 }
 
-@section scripts{
+@section scripts
+{
 <script src="~/js/manage.js" asp-append-version="true"></script>
-<script>
-        $(document).ready(function () {
-            LoadTeams(@Model.Id);
-        });
+<script type="text/javascript">
+    $(document).ready(function () {
+        //Load the championship teams.
+        LoadTeams(@Model.Id);
+    });
 </script>
 }
 
@@ -26,7 +29,7 @@
 
 <div id="renderedBrackets" class="shadow-lg">
     <div class="text-center">
-        <div class="spinner-border text-light" role="status" style="width: 10rem; height: 10rem; margin:20rem;">
+        <div class="spinner-border text-dark" role="status" style="width: 10rem; height: 10rem; margin:20rem;">
             <span class="sr-only">Loading...</span>
         </div>
     </div>

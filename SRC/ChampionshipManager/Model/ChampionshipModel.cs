@@ -10,6 +10,7 @@ namespace ChampionshipManager.Model
 
         public string Name { get; set; }
 
+        //Tells if the Championship is In Progress or Finished.
         public bool Active { get; set; }
 
         public ISet<TeamChampionship> TeamsChampionship { get; set; }

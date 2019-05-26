@@ -9,6 +9,7 @@ namespace ChampionshipManager.Controllers
 {
     public class TeamController : Controller
     {
+        //Database Context
         private readonly ChampionshipManagerContext _context;
 
         public TeamController(ChampionshipManagerContext context)
@@ -16,12 +17,19 @@ namespace ChampionshipManager.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Action which returns the Create view.
+        /// </summary>
         [HttpGet]
         public ActionResult Create()
         {
             return View();
         }
 
+        /// <summary>
+        /// Action which creates the new Team received.
+        /// </summary>
+        /// <returns>Create View</returns>
         [HttpPost]
         public async Task<ActionResult> Create(TeamCreateViewModel model)
         {
@@ -49,6 +57,11 @@ namespace ChampionshipManager.Controllers
             return View();
         }
 
+        /// <summary>
+        /// Delete a team by id.
+        /// </summary>
+        /// <param name="id">Team id</param>
+        /// <returns>Bad Request if id is null</returns>
         [HttpGet]
         public async Task<ActionResult> Delete(int? id)
         {

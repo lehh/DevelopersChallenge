@@ -12,8 +12,10 @@ namespace ChampionshipManager.Model
         public int ChampionshipId { get; set; }
         public Championship Championship { get; set; }
 
+        //The zero based binary tree index.
         public int TreePosition { get; set; }
 
+        //Tells if the Team is out or active.
         public bool TeamActive { get; set; }
     }
 }

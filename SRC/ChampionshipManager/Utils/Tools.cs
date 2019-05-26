@@ -10,33 +10,46 @@ namespace ChampionshipManager.Utils
     public class Tools
     {
         //From Greg Hewgill response in stackoverflow -> https://stackoverflow.com/questions/600293/how-to-check-if-a-number-is-a-power-of-2
+        /// <summary>
+        /// Verify if a number is a power of two.
+        /// </summary>
         public static bool IsPowerOfTwo(int number)
         {
             return (number != 0) && ((number & (number - 1)) == 0);
         }
 
-        ///Returns, based on the leaves, the zero based number of nodes in the binary tree.
+        /// <summary>
+        /// Returns, based on the leaves, the zero based number of nodes in the binary tree.
+        /// </summary>
         public static int GetNumberOfNodes(int numberOfLeaves)
         {
             return (numberOfLeaves * 2) - 2; //Zero based
         }
 
-        public static HashSet<int> RandomizeBrackets(List<int> idList)
+        /// <summary>
+        /// Randomize the positions, based on the number of teams, to define the matches.
+        /// </summary>
+        /// <param name="idList"></param>
+        /// <returns>Hashset with numbers(indexes) in a random order</returns>
+        public static HashSet<int> RandomizePositions(int teamsCount)
         {
-            var teamCount = idList.Count;
-            var availableNumbersHash = new HashSet<int>();
-            var totalNodes = GetNumberOfNodes(teamCount);
+            var treeNodesHash = new HashSet<int>();
 
-            while (availableNumbersHash.Count != teamCount)
+            //Get the total number of nodes in the tree.
+            var totalNodes = GetNumberOfNodes(teamsCount);
+
+            //Define which numbers(indexes) will be randomized and returned.
+            while (treeNodesHash.Count != teamsCount)
             {
-                availableNumbersHash.Add(totalNodes);
+                treeNodesHash.Add(totalNodes);
                 totalNodes--;
             }
 
             var random = new Random();
-            availableNumbersHash = availableNumbersHash.OrderBy(number => random.Next()).ToHashSet();
+            treeNodesHash = treeNodesHash.OrderBy(number => random.Next()).ToHashSet();
 
-            return availableNumbersHash;
+            //Return the hash in a random order.
+            return treeNodesHash;
         }
     }
 }

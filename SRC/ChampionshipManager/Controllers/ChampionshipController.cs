@@ -14,6 +14,7 @@ namespace ChampionshipManager.Controllers
 {
     public class ChampionshipController : Controller
     {
+        //Database Context
         private readonly ChampionshipManagerContext _context;
 
         public ChampionshipController(ChampionshipManagerContext context)
@@ -21,6 +22,9 @@ namespace ChampionshipManager.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Action which returns the Create View along with the available teams.
+        /// </summary>
         [HttpGet]
         public async Task<ActionResult> Create()
         {
@@ -39,9 +43,13 @@ namespace ChampionshipManager.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Action which creates the Championship received by the model.
+        /// </summary>
         [HttpPost]
         public async Task<ActionResult> Create(ChampionshipCreateViewModel model)
         {
+            //Fill the Team SelectList with the available teams.
             #region Filling TeamSelectList
             var teamList = await _context.Team.ToListAsync();
 
@@ -57,9 +65,11 @@ namespace ChampionshipManager.Controllers
 
             if (ModelState.IsValid)
             {
+
                 #region Validations
                 var countSelectedTeams = model.TeamIdList.Count;
 
+                //Verify if the number of selected teams is a power of two.
                 if (!Tools.IsPowerOfTwo(countSelectedTeams))
                 {
                     throw new Exception("The number of selected teams must be a power of 2.");
@@ -71,15 +81,16 @@ namespace ChampionshipManager.Controllers
                     var championship = new Championship() { Name = model.Name, Active = true };
                     var teamChampionshipList = new List<TeamChampionship>();
 
-                    var positionHash = Tools.RandomizeBrackets(model.TeamIdList);
+                    var positionHash = Tools.RandomizePositions(model.TeamIdList.Count);
                     var counter = 0;
 
+                    //Creates a TeamChampionship for each position in the positionHash (positions = count of teams)
                     foreach (var position in positionHash)
                     {
                         teamChampionshipList.Add(new TeamChampionship()
                         {
                             Championship = championship,
-                            Team = await _context.Team.FindAsync(model.TeamIdList[counter]),
+                            Team = await _context.Team.FindAsync(model.TeamIdList[counter]), //Maybe there's a better way to do this?
                             TreePosition = position,
                             TeamActive = true
                         });
@@ -104,6 +115,10 @@ namespace ChampionshipManager.Controllers
             return View(model);
         }
 
+        /// <summary>
+        /// Delete a Championship by id.
+        /// </summary>
+        /// <param name="id">Championship Id</param>
         public async Task<ActionResult> Delete(int? id)
         {
             if (id.HasValue)
@@ -136,10 +151,9 @@ namespace ChampionshipManager.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Action which returns the Manage page where the championship can be managed.
         /// </summary>
         /// <param name="id">Championship Id</param>
-        /// <returns></returns>
         public async Task<ActionResult> Manage(int? id)
         {
             if (id.HasValue)
@@ -163,6 +177,8 @@ namespace ChampionshipManager.Controllers
 
                         return View(model);
                     }
+
+                    return NotFound();
                 }
                 catch (Exception ex)
                 {
@@ -174,10 +190,9 @@ namespace ChampionshipManager.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Action which returns a Json object with the Championship Teams based on the Championship id.
         /// </summary>
         /// <param name="id"> Championship Id </param>
-        /// <returns></returns>
         public async Task<ActionResult> GetChampionshipTeams(int? id)
         {
             if (id.HasValue)
@@ -226,7 +241,6 @@ namespace ChampionshipManager.Controllers
         /// </summary>
         /// <param name="id">Championship Id</param>
         /// <param name="teamId">Team Id</param>
-        /// <returns></returns>
         [HttpPost]
         public async Task<ActionResult> AdvanceToNextPhase(int? id, int? teamId)
         {
@@ -246,14 +260,13 @@ namespace ChampionshipManager.Controllers
                     var teamPosition = teamChamp.TreePosition;
 
                     //Find the parent node index.
-                    //The parent node of N is (N-1)/2.
-                    var newPosition = (teamPosition - 1) / 2;
+                    var newPosition = (teamPosition - 1) / 2; //The parent node of N is (N-1)/2.
 
                     if (newPosition <= 0)
                     {
                         newPosition = 0;
 
-                        //If team won the finals, the championship ends.
+                        //If the team won the finals, the Championship ends.
                         championship.Active = false;
                     }
 
@@ -295,6 +308,9 @@ namespace ChampionshipManager.Controllers
             return BadRequest();
         }
 
+        /// <summary>
+        /// View which generates the html brackets based on the number of teams and total nodes.
+        /// </summary>
         public ViewResult GenerateBrackets(int numberOfTeams, int totalNodes)
         {
             return View("DynBrackets", new ChampionshipBracketsViewModel() { NumberOfTeams = numberOfTeams, TotalNodes = totalNodes });

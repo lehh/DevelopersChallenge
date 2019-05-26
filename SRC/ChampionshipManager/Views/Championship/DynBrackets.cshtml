@@ -9,10 +9,11 @@
         var nextColumnBrackets = currentColumnBrackets / 2;
     }
 
-    @while (currentColumnBrackets >= 1)
+    @*Dynamically generates by column the Championship brackets based on the number of teams and total nodes.*@
+    @while (nextColumnBrackets >= 1)
     {
         <div class="column">
-            <div class="brackets">
+            <div class="brackets">@*Wrap all the column brackets for CSS purposes.*@
 
                 @while (currentColumnBrackets > 0)
                 {
@@ -36,7 +37,7 @@
         nextColumnBrackets = nextColumnBrackets / 2;
     }
 
-
+    @*Winner rectangle.*@
     <div class="column">
         <div class="brackets">
             <div class="bracket">
