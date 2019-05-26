@@ -61,9 +61,12 @@ function FillComplete(championshipId) {
 
     $(".rectangle").each(function () {
         var rectangle = this;
+        var $rectangle = $(rectangle);
+        var siblingRect = $rectangle.siblings(".rectangle");
+
         var btn = $("#btnFrwd" + rectangle.id);
 
-        if ($(rectangle).html() === "")
+        if ($rectangle.html() === "" || siblingRect.html() === "")
             btn.remove();
     });
 }

@@ -24,7 +24,7 @@
 
         @Html.ListBoxFor(m => m.TeamIdList, Model.TeamSelectList, new { @class = "form-control", multiple = "multiple", size = "16", height = "100%" })
 
-        @Html.ValidationMessageFor(m => m.TeamSelectList)
+        @Html.ValidationMessageFor(m => m.TeamIdList)
     </div>
 
     <button type="submit" class="btn btn-success">Submit</button>

@@ -238,7 +238,7 @@ namespace ChampionshipManager.Controllers
                     var championship = await _context.Championship.SingleAsync(c => c.Id == id);
 
                     //Load TeamChampionship in the championship object.
-                     _context.Entry(championship).Collection(c => c.TeamsChampionship).Load();
+                    _context.Entry(championship).Collection(c => c.TeamsChampionship).Load();
 
                     //Get the team that's going to the next phase.
                     var teamChamp = championship.TeamsChampionship.Where(tc => tc.TeamId == teamId).SingleOrDefault();

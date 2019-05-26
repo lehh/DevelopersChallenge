@@ -17,9 +17,10 @@ namespace ChampionshipManager.ViewModel
         [StringLength(150)]
         public string Name { get; set; }
 
+        [Required(ErrorMessage = "Please, select at least 2 teams.")]
+        [MinLength(2, ErrorMessage = "Please, select at least 2 teams.")]
         public List<int> TeamIdList { get; set; }
 
-        [Required(ErrorMessage = "Select at least 2 teams.")]
         [Display(Name = "Teams")]
         public List<SelectListItem> TeamSelectList { get; set; }
     }
